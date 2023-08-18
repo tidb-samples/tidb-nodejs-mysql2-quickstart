@@ -237,8 +237,9 @@ DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<database>?<key1>=<value1>
 
 **Example 1: Connect to TiDB Serverless with public endpoint:**
 
+**MUST** enable SSL (TLS) connection via adding the argument `?ssl={"minVersion":"TLSv1.2"}` to the connection URL.
+
 ```dotenv
-# Enable TLS connection with the argument `?ssl={"minVersion":"TLSv1.2"}`
 DATABASE_URL=mysql://87pMDHi7EVaPxAR.root:password@gateway01.us-west-2.prod.aws.tidbcloud.com:4000/test?ssl={"minVersion":"TLSv1.2"}
 ```
 
