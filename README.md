@@ -50,7 +50,10 @@ npm install
 
 **For your existing project**
 
-Run the following command to install the Node.js driver `mysql2` package for the database connection and the `dotenv` package for loading environment variables from a `.env` file:
+Run the following command to install the following packages:
+
+- `mysql2`: The Node.js MySQL driver for the database connection.
+- `dotenv`: The utils package to loading environment variables from the `.env` file.
 
 ```shell
 npm install mysql2 dotenv --save
@@ -179,8 +182,7 @@ npm start
 
 If the connection is successful, the console will output the version of the TiDB cluster.
 
-<details open>
-<summary><b>Expected execution output</b></summary>
+**Expected execution output:**
 
 ```
 🔌 Connected to TiDB cluster! (TiDB version: 5.7.25-TiDB-v7.1.0)
@@ -192,55 +194,34 @@ If the connection is successful, the console will output the version of the TiDB
 🔢 Added 50 coins and 50 goods to player 12, updated 1 row.
 🚮 Deleted 1 player data.
 ```
-</details>
 
 ## Example codes
 
 ### Connect to TiDB cluster
 
-Here is a complete code example to show how to connect to the TiDB cluster with connection options:
-
-> **Notice**: 
-> To connect TiDB Serverless cluster with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection.
+The following code use the environment variables (stored in the `.env` file) as the connection options to establish a database connection with the TiDB cluster:
 
 ```javascript
-// Step 1. Import the 'mysql2' and 'dotenv' packages.
-import {createConnection} from "mysql2/promise";
-import dotenv from "dotenv";
-
-// Step 2. Load environment variables from .env file via the 'dotenv' package.
-dotenv.config();
-
-// Step 3. Establish a connection to TiDB cluster with connection options.
-async function connectWithOptions() {
-    try {
-        const options = {
-            host: process.env.DATABASE_HOST || '127.0.0.1',
-            port: process.env.DATABASE_PORT || 4000,
-            user: process.env.DATABASE_USER || 'root',
-            password: process.env.DATABASE_PASSWORD || '',
-            database: process.env.DATABASE_NAME || 'test',
-            ssl: process.env.DATABASE_ENABLE_SSL === 'true' ? {
-                minVersion: 'TLSv1.2',
-                ca: process.env.DATABASE_SSL_CA ? fs.readFileSync(process.env.DATABASE_SSL_CA) : undefined
-            } : null,
-        }
-        return await createConnection(options);
-    } catch (err) {
-        throw new Error(`Failed to connect to TiDB cluster: ${err.message}`);
-    }
+const options = {
+    host: process.env.DATABASE_HOST || '127.0.0.1',
+    port: process.env.DATABASE_PORT || 4000,
+    user: process.env.DATABASE_USER || 'root',
+    password: process.env.DATABASE_PASSWORD || '',
+    database: process.env.DATABASE_NAME || 'test',
+    ssl: process.env.DATABASE_ENABLE_SSL === 'true' ? {
+        minVersion: 'TLSv1.2',
+        ca: process.env.DATABASE_SSL_CA ? fs.readFileSync(process.env.DATABASE_SSL_CA) : undefined
+    } : null,
 }
-
-// Step 4. Close the connection.
-connectWithOptions().then(conn => {
-    console.log('Connected to TiDB cluster!');
-    conn.end();
-});
+const conn = await createConnection(options);
 ```
+
+> **Notice**:
+> To connect TiDB Serverless cluster with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection.
 
 ### Connect with connection URL
 
-`mysql2` driver also supports connecting to TiDB cluster with connection URL:
+The following code read the connection URL from the environment variable `DATABASE_URL`, and establish a connection with the TiDB cluster:
 
 ```javascript
 const conn = await createConnection(process.env.DATABASE_URL);
@@ -248,31 +229,28 @@ const conn = await createConnection(process.env.DATABASE_URL);
 
 #### Connection URL
 
-Edit the `.env` file, set up the environment variable `DATABASE_URL` to the connection URL in the following format with the [connection parameters](#3-obtain-connection-parameters):
+The connection URL configures the [parameters for connecting to the database](#3-obtain-connection-parameters) in the following URL format:
 
 ```dotenv
 DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<database>?<key1>=<value1>
 ```
 
-<details open>
-<summary>Example 1: connect TiDB Serverless cluster on TiDB cloud</summary>
+**Example 1: Connect to TiDB Serverless with public endpoint:**
 
 ```dotenv
 # Enable TLS connection with the argument `?ssl={"minVersion":"TLSv1.2"}`
 DATABASE_URL=mysql://87pMDHi7EVaPxAR.root:password@gateway01.us-west-2.prod.aws.tidbcloud.com:4000/test?ssl={"minVersion":"TLSv1.2"}
 ```
-</details>
-<details>
-<summary>Example 2: connect TiDB Playground cluster on local</summary>
+
+**Example 2: Connect to local TiDB playground cluster**
 
 ```dotenv
 DATABASE_URL=mysql://root@localhost:4000/test
 ```
-</details>
 
 ### Insert data
 
-The following query creates a single `Player` with two fields:
+The following query creates a single `Player` with two fields and return a `ResultSetHeader` object (`rsh`):
 
 ```javascript
 async function createPlayer(conn, coins, goods) {
