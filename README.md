@@ -72,10 +72,10 @@ npm install mysql2 dotenv --save
    > **Note:**
    > In Node.js applications, you **don't** have to provide an SSL CA certificate, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) by default when establishing the TLS (SSL) connection.
 
-   <div style="text-align: center;">
+   <center>
       <img width="600" src="./static/images/tidb-cloud-connect-dialog-light-theme.png" alt="The connect dialog in the overview page of TiDB Serverless"/>
       <div><i>The connect dialog in the overview page of TiDB Serverless</i></div>
-   </div>
+   </center>
 
 </details>
 
