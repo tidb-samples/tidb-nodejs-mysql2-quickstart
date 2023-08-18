@@ -50,7 +50,7 @@ npm install
 
 For your existing project, run the following command to install the packages:
 
-- `mysql2`: The Node.js MySQL driver for the database connection.
+- `mysql2`: The Node.js MySQL driver for the database connection and SQL operations.
 - `dotenv`: The utils package to loading environment variables from the `.env` file.
 
 ```shell
