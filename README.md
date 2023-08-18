@@ -233,7 +233,7 @@ The connection URL configures the [parameters for connecting to the database](#3
 DATABASE_URL=mysql://<user>:<password>@<host>:<port>/<database>?<key1>=<value1>
 ```
 
-**Example 1: Connect to TiDB Serverless with public endpoint:**
+**Example 1: Connect to TiDB Serverless with public endpoint**
 
 **MUST** enable SSL (TLS) connection via adding the argument `?ssl={"minVersion":"TLSv1.2"}` to the connection URL.
 
@@ -314,7 +314,7 @@ Check out the [Delete Data](https://docs.pingcap.com/tidbcloud/dev-guide-delete-
 
 - Check out the documentation of [node-mysql2](https://github.com/sidorares/node-mysql2#readme) for more usage about the driver.
 - Explore the real-time analytics feature on the [TiDB Cloud Playground](https://play.tidbcloud.com/real-time-analytics).
-- Read the development guide to learn more application development details about TiDB.
+- Read the [TiDB Developer Guide](https://docs.pingcap.com/tidbcloud/dev-guide-overview) to learn more details about application development with TiDB.
   - [HTAP Queries](https://docs.pingcap.com/tidbcloud/dev-guide-hybrid-oltp-and-olap-queries)
   - [Transaction](https://docs.pingcap.com/tidbcloud/dev-guide-transaction-overview)
   - [Optimizing SQL Performance](https://docs.pingcap.com/tidbcloud/dev-guide-optimize-sql-overview)
