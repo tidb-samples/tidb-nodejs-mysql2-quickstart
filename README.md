@@ -71,13 +71,13 @@ You can obtain the database connection parameters on [TiDB Cloud's Web Console](
 4. If you have not set a password yet, click **Create password** to generate a random password.
 5. Copy the connection parameters shown on the code block.
 
-   > **Note:**
-   > In Node.js applications, you **don't** have to provide an SSL CA certificate, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) by default when establishing the TLS (SSL) connection.
-
-   <center>
-      <img width="600" src="./static/images/tidb-cloud-connect-dialog-light-theme.png" alt="The connect dialog in the overview page of TiDB Serverless"/>
-      <div><i>The connect dialog in the overview page of TiDB Serverless</i></div>
-   </center>
+    <div align="center">
+        <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="./static/images/tidb-cloud-connect-dialog-dark-theme.png" width="600">
+            <img alt="The connection dialog of TiDB Serverless" src="./static/images/tidb-cloud-connect-dialog-light-theme.png" width="600">
+        </picture>
+        <div><i>The connection dialog of TiDB Serverless</i></div>
+    </div>
 
 </details>
 
@@ -218,11 +218,21 @@ const options = {
 const conn = await createConnection(options);
 ```
 
-> **Notice**:
-> 
-> To connect **TiDB Serverless** with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection.
->
-> To connect **TiDB Dedicated** with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection and using `DATABASE_SSL_CA` to specify the file path of CA certificate downloaded from [TiDB Cloud Web Console](#3-obtain-connection-parameters).
+<details open>
+   <summary><b>For TiDB Serverless</b></summary>
+
+To connect **TiDB Serverless** with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection.
+
+In Node.js applications, you **don't** have to provide an SSL CA certificate, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) (Trusted by TiDB Serverless) by default when establishing the TLS (SSL) connection.
+
+</details>
+
+<details>
+   <summary><b>For TiDB Dedicated</b></summary>
+
+To connect **TiDB Dedicated** with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection and using `DATABASE_SSL_CA` to specify the file path of CA certificate downloaded from [TiDB Cloud Web Console](#3-obtain-connection-parameters).
+
+</details>
 
 ### Connect with connection URL
 
