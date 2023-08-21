@@ -8,8 +8,8 @@ The following guide will show you how to connect to the TiDB cluster with Node.j
 > **Notice:**
 >
 > TiDB is a MySQL-compatible database, which means you can connect to a TiDB cluster in your application using the familiar driver/ORM framework from the MySQL ecosystem.
-> 
-> The only difference is that if you are using the public endpoint to connect to a TiDB Serverless cluster, you **MUST** [enable TLS connection on the mysql2 driver](#connect-to-tidb-cluster).
+>
+> The only difference is that if you connect to a TiDB Serverless cluster with public endpoint, you **MUST** [enable TLS connection on the mysql2 driver](#connect-to-tidb-cluster).
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ To complete this guide, you need:
 
 ## Getting started
 
-Learn how to use the `mysql2` driver to connect to the TiDB cluster through a sample code.
+This section demonstrates how to run the sample application code and connect to TiDB with `mysql2` driver .
 
 ### 1. Clone the repository
 
@@ -63,6 +63,8 @@ npm install mysql2 dotenv --save
 <details open>
 <summary><b>(Option 1) TiDB Serverless</b></summary>
 
+You can obtain the database connection parameters on [TiDB Cloud's Web Console](https://tidbcloud.com/free-trial?utm_source=github&utm_medium=quickstart) through the following steps:
+
 1. Navigate to the [Clusters](https://tidbcloud.com/console/clusters) page, and then click the name of your target cluster to go to its overview page.
 2. Click **Connect** in the upper-right corner.
 3. In the connection dialog, select `General` from the **Connect With** dropdown and keep the default setting of the **Endpoint Type** as `Public`.
@@ -82,6 +84,8 @@ npm install mysql2 dotenv --save
 <details>
 <summary><b>(Option 2) TiDB Dedicated</b></summary>
 
+You can obtain the database connection parameters on [TiDB Cloud's Web Console](https://tidbcloud.com/console) through the following steps:
+
 1. Navigate to the [Clusters](https://tidbcloud.com/console/clusters) page, and then click the name of your target cluster to go to its overview page.
 2. Click **Connect** in the upper-right corner. A connection dialog is displayed.
 3. Create a traffic filter for the cluster.
@@ -96,7 +100,7 @@ npm install mysql2 dotenv --save
 </details>
 
 <details>
-<summary><b>(Option 3) Self-Hosted TiDB</b></summary>
+<summary><b>(Option 3) TiDB Self-Hosted</b></summary>
 
    Prepare the following connection parameters for your cluster:
 
@@ -148,12 +152,12 @@ npm install mysql2 dotenv --save
 </details>
 
 <details>
-   <summary><b>(Option 3) Self-Hosted TiDB</b></summary>
+   <summary><b>(Option 3) TiDB Self-Hosted</b></summary>
 
    1. Make a copy of the `.env.example` file to the `.env` file.
    2. Edit the `.env` file, and replace the placeholders for `<host>`, `<user>`, and `<password>` with the copied connection parameters.
 
-   > The Self-Hosted TiDB using non-encrypted connection between TiDB's server and clients by default, SKIP the below steps if your cluster doesn't [enable TLS connections](https://docs.pingcap.com/tidb/stable/enable-tls-between-clients-and-servers#configure-tidb-server-to-use-secure-connections).
+   > The TiDB Self-Hosted cluster using non-encrypted connection between TiDB's server and clients by default, SKIP the below steps if your cluster doesn't [enable TLS connections](https://docs.pingcap.com/tidb/stable/enable-tls-between-clients-and-servers#configure-tidb-server-to-use-secure-connections).
    
    3. (Optional) Modify `DATABASE_ENABLE_SSL` to `true` to enable a TLS connection.
    4. (Optional) Modify `DATABASE_SSL_CA` to the file path of the trusted CA certificate defined with [`ssl-ca`](https://docs.pingcap.com/tidb/stable/tidb-configuration-file#ssl-ca) option.
@@ -215,7 +219,10 @@ const conn = await createConnection(options);
 ```
 
 > **Notice**:
-> To connect TiDB Serverless cluster with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection.
+> 
+> To connect **TiDB Serverless** with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection.
+>
+> To connect **TiDB Dedicated** with the public endpoint, please set up the environment variable `DATABASE_ENABLE_SSL` to `true` to enable TLS connection and using `DATABASE_SSL_CA` to specify the file path of CA certificate downloaded from [TiDB Cloud Web Console](#3-obtain-connection-parameters).
 
 ### Connect with connection URL
 
@@ -258,7 +265,7 @@ async function createPlayer(conn, coins, goods) {
 }
 ```
 
-Check out the [Insert Data](https://docs.pingcap.com/tidbcloud/dev-guide-insert-data) chapter for more information.
+For more information, refer to [Insert Data](https://docs.pingcap.com/tidbcloud/dev-guide-insert-data).
 
 ### Query data
 
@@ -271,7 +278,7 @@ async function getPlayerByID(conn, id) {
 }
 ```
 
-Check out the [Query Data](https://docs.pingcap.com/tidbcloud/dev-guide-get-data-from-single-table) chapter for more information.
+For more information, refer to [Query Data](https://docs.pingcap.com/tidbcloud/dev-guide-get-data-from-single-table).
 
 ### Update data
 
@@ -287,7 +294,7 @@ async function updatePlayer(conn, playerID, incCoins, incGoods) {
 }
 ```
 
-Check out the [Update Data](https://docs.pingcap.com/tidbcloud/dev-guide-update-data) chapter for more information.
+For more information, refer to [Update Data](https://docs.pingcap.com/tidbcloud/dev-guide-update-data).
 
 ### Delete data
 
@@ -300,7 +307,7 @@ async function deletePlayerByID(conn, id) {
 }
 ```
 
-Check out the [Delete Data](https://docs.pingcap.com/tidbcloud/dev-guide-delete-data) chapter for more information.
+For more information, refer to [Delete Data](https://docs.pingcap.com/tidbcloud/dev-guide-delete-data).
 
 ## Best practices
 
