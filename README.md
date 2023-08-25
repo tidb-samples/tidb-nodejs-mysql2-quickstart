@@ -3,11 +3,11 @@
 [![Language](https://img.shields.io/badge/Language-JavaScript-f1e05a.svg)](https://nodejs.org/en)
 [![Driver](https://img.shields.io/badge/Driver-mysql2-blue.svg)](https://github.com/sidorares/node-mysql2)
 
+TiDB is a MySQL-compatible database, and [node-mysql2](https://github.com/sidorares/node-mysql2) is a fast [mysqljs/mysql](https://github.com/mysqljs/mysql) compatible MySQL driver for Node.js.
+
 The following guide will show you how to connect to TiDB with Node.js driver [node-mysql2](https://github.com/sidorares/node-mysql2) and perform basic SQL operations like create, read, update, and delete.
 
 > **Notice:**
->
-> TiDB is a MySQL-compatible database, which means you can connect to TiDB in your application using your familiar MySQL driver/ORM framework.
 >
 > The only difference is that if you connect to a TiDB Serverless cluster with public endpoint, you **MUST** [enable TLS connection on the mysql2 driver](#connect-with-connection-options).
 
@@ -26,7 +26,7 @@ To complete this guide, you need:
 
 ## Getting started
 
-This section demonstrates how to run the sample application code and connect to TiDB with `mysql2` driver .
+This section demonstrates how to run the sample application code and connect to TiDB with node-mysql2 driver .
 
 ### Step 1. Clone the repository
 
@@ -49,9 +49,6 @@ npm install
 <summary><b>Install dependencies to existing project</b></summary>
 
 For your existing project, run the following command to install the packages:
-
-- `mysql2`: The Node.js MySQL driver for the database connection and SQL operations.
-- `dotenv`: The utils package to loading environment variables from the `.env` file.
 
 ```shell
 npm install mysql2 dotenv --save
@@ -82,18 +79,18 @@ npm install mysql2 dotenv --save
    cp .env.example .env
    ```
 
-6. Copy and paste the connection parameters shown on the code block to the corresponding variables in the `.env` file.
+6. Edit the `.env` file, copy the connection parameters on the connection dialog, and replace the corresponding placeholders `{}`. The example configuration is as follows:
 
     ```dotenv
-    DATABASE_HOST=<host>
-    DATABASE_PORT=4000
-    DATABASE_USER=<user>
-    DATABASE_PASSWORD=<password>
-    DATABASE_NAME=test
-    DATABASE_ENABLE_SSL=true
+    TIDB_HOST={host}
+    TIDB_PORT=4000
+    TIDB_USER={user}
+    TIDB_PASSWORD={password}
+    TIDB_DATABASE=test
+    TIDB_ENABLE_SSL=true
     ```
    
-    > Modify `DATABASE_ENABLE_SSL` to `true` to enable a TLS connection. (Required for public endpoint)
+    > Modify `TIDB_ENABLE_SSL` to `true` to enable a TLS connection. (Required for public endpoint)
 
 </details>
 
@@ -106,25 +103,25 @@ You can obtain the database connection parameters on [TiDB Cloud's Web Console](
 2. Click **Connect** in the upper-right corner. A connection dialog is displayed.
 3. Click **Allow Access from Anywhere**, and then click **Download TiDB cluster CA** to download the CA certificate.
 4. Select `General` from the **Connect With** dropdown and select `Public` from the **Endpoint Type** dropdown.
-5. Make a copy of the `.env.example` file to the `.env` file.
+5. Run the following command to copy `.env.example` and rename it to `.env`:
 
     ```shell
     cp .env.example .env
     ```
 
-6. Copy and paste the connection parameters shown on the code block to the corresponding variables in the `.env` file.
+6. Edit the `.env` file, copy the connection parameters on the connection dialog, and replace the corresponding placeholders `{}`. The example configuration is as follows:
 
     ```dotenv
-    DATABASE_HOST=<host>
-    DATABASE_PORT=4000
-    DATABASE_USER=<user>
-    DATABASE_PASSWORD=<password>
-    DATABASE_NAME=test
-    DATABASE_ENABLE_SSL=true
-    DATABASE_SSL_CA=/path/to/ca.pem
+    TIDB_HOST=<host>
+    TIDB_PORT=4000
+    TIDB_USER=<user>
+    TIDB_PASSWORD=<password>
+    TIDB_DATABASE=test
+    TIDB_ENABLE_SSL=true
+    TIDB_CA_PATH=/path/to/ca.pem
     ```
    
-    > Modify `DATABASE_ENABLE_SSL` to `true` to enable a TLS connection and using `DATABASE_SSL_CA` to specify the file path of CA certificate downloaded from the connection dialog.
+    > Modify `TIDB_ENABLE_SSL` to `true` to enable a TLS connection and using `TIDB_CA_PATH` to specify the file path of CA certificate downloaded from the connection dialog.
 
 </details>
 
@@ -140,18 +137,18 @@ You can obtain the database connection parameters on [TiDB Cloud's Web Console](
 2. Replace the placeholders for `<host>`, `<user>`, and `<password>` with the connection parameters of your TiDB cluster.
 
     ```dotenv
-    DATABASE_HOST=<host>
-    DATABASE_PORT=4000
-    DATABASE_USER=<user>
-    DATABASE_PASSWORD=<password>
-    DATABASE_NAME=test
-    # DATABASE_ENABLE_SSL=true
-    # DATABASE_SSL_CA=/path/to/ca.pem
+    TIDB_HOST=<host>
+    TIDB_PORT=4000
+    TIDB_USER=<user>
+    TIDB_PASSWORD=<password>
+    TIDB_DATABASE=test
+    # TIDB_ENABLE_SSL=true
+    # TIDB_CA_PATH=/path/to/ca.pem
     ```
 
     The TiDB Self-Hosted cluster using non-encrypted connection between TiDB's server and clients by default.
 
-    If you want to enable TLS connection, please uncomment the `DATABASE_ENABLE_SSL` and `DATABASE_SSL_CA` options and specify the file path of CA certificate defined with [`ssl-ca`](https://docs.pingcap.com/tidb/stable/tidb-configuration-file#ssl-ca) option.
+    If you want to enable TLS connection, please uncomment the `TIDB_ENABLE_SSL` and `TIDB_CA_PATH` options and specify the file path of CA certificate defined with [`ssl-ca`](https://docs.pingcap.com/tidb/stable/tidb-configuration-file#ssl-ca) option.
 
 </details>
 
@@ -163,9 +160,9 @@ Run the following command to execute the sample code:
 npm start
 ```
 
-If the connection is successful, the console will output the version of the TiDB cluster.
-
 **Expected execution output:**
+
+If the connection is successful, the console will output the version of the TiDB cluster.
 
 ```
 🔌 Connected to TiDB cluster! (TiDB version: 5.7.25-TiDB-v7.1.0)
@@ -186,20 +183,20 @@ The following code establish a connection to TiDB with options defined in enviro
 
 ```javascript
 const options = {
-    host: process.env.DATABASE_HOST || '127.0.0.1',
-    port: process.env.DATABASE_PORT || 4000,
-    user: process.env.DATABASE_USER || 'root',
-    password: process.env.DATABASE_PASSWORD || '',
-    database: process.env.DATABASE_NAME || 'test',
-    ssl: process.env.DATABASE_ENABLE_SSL === 'true' ? {
+    host: process.env.TIDB_HOST || '127.0.0.1',
+    port: process.env.TIDB_PORT || 4000,
+    user: process.env.TIDB_USER || 'root',
+    password: process.env.TIDB_PASSWORD || '',
+    database: process.env.TIDB_DATABASE || 'test',
+    ssl: process.env.TIDB_ENABLE_SSL === 'true' ? {
         minVersion: 'TLSv1.2',
-        ca: process.env.DATABASE_SSL_CA ? fs.readFileSync(process.env.DATABASE_SSL_CA) : undefined
+        ca: process.env.TIDB_CA_PATH ? fs.readFileSync(process.env.TIDB_CA_PATH) : undefined
     } : null,
 }
 const conn = await createConnection(options);
 ```
 
-To enable TLS connection, please set up the environment variable `DATABASE_ENABLE_SSL` to `true`. (Required for TiDB Serverless public endpoint)
+To enable TLS connection, please set up the environment variable `TIDB_ENABLE_SSL` to `true`. (Required for TiDB Serverless public endpoint)
 
 > For TiDB Serverless, you **don't** have to specify an SSL CA certificate, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) by default, which is trusted by TiDB Serverless.
 
@@ -228,7 +225,7 @@ const [rsh] = await conn.query('INSERT INTO players (coins, goods) VALUES (?, ?)
 console.log(rsh.insertId);
 ```
 
-For more information, refer to [Insert Data](https://docs.pingcap.com/tidbcloud/dev-guide-insert-data).
+For more information, refer to [Insert data](https://docs.pingcap.com/tidbcloud/dev-guide-insert-data).
 
 ### Query data
 
@@ -239,7 +236,7 @@ const [rows] = await conn.query('SELECT id, coins, goods FROM players WHERE id =
 console.log(rows[0]);
 ```
 
-For more information, refer to [Query Data](https://docs.pingcap.com/tidbcloud/dev-guide-get-data-from-single-table).
+For more information, refer to [Query data](https://docs.pingcap.com/tidbcloud/dev-guide-get-data-from-single-table).
 
 ### Update data
 
@@ -253,7 +250,7 @@ const [rsh] = await conn.query(
 console.log(rsh.affectedRows);
 ```
 
-For more information, refer to [Update Data](https://docs.pingcap.com/tidbcloud/dev-guide-update-data).
+For more information, refer to [Update data](https://docs.pingcap.com/tidbcloud/dev-guide-update-data).
 
 ### Delete data
 
@@ -264,12 +261,12 @@ const [rsh] = await conn.query('DELETE FROM players WHERE id = ?;', [1]);
 console.log(rsh.affectedRows);
 ```
 
-For more information, refer to [Delete Data](https://docs.pingcap.com/tidbcloud/dev-guide-delete-data).
+For more information, refer to [Delete data](https://docs.pingcap.com/tidbcloud/dev-guide-delete-data).
 
 ## Best practices
 
-- Using [Connection Pools](https://github.com/sidorares/node-mysql2#using-connection-pools) to manage database connections, which can reduce the performance overhead caused by frequently establishing/destroying connections.
-- Using [Prepared Statements](https://github.com/sidorares/node-mysql2#using-prepared-statements) to avoid SQL injection.
+- Using [connection pools](https://github.com/sidorares/node-mysql2#using-connection-pools) to manage database connections, which can reduce the performance overhead caused by frequently establishing/destroying connections.
+- Using [prepared statements](https://github.com/sidorares/node-mysql2#using-prepared-statements) to avoid SQL injection.
 - Using ORM frameworks to improve development efficiency in scenarios without a lot of complex SQL, such as [Sequelize](https://sequelize.org/) and [TypeORM](https://typeorm.io/).
 - Enable the `supportBigNumbers: true` option when dealing with big numbers (`BIGINT` and `DECIMAL` columns) in the database.
 - Enable the `enableKeepAlive: true` option to avoid socket error `read ECONNRESET` due to network problems. (Related issue: [sidorares/node-mysql2#683](https://github.com/sidorares/node-mysql2/issues/683))

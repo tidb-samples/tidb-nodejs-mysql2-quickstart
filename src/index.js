@@ -41,14 +41,14 @@ async function connectWithURL() {
 async function connectWithOptions() {
     try {
         const options = {
-            host: process.env.DATABASE_HOST || '127.0.0.1',
-            port: process.env.DATABASE_PORT || 4000,
-            user: process.env.DATABASE_USER || 'root',
-            password: process.env.DATABASE_PASSWORD || '',
-            database: process.env.DATABASE_NAME || 'test',
-            ssl: process.env.DATABASE_ENABLE_SSL === 'true' ? {
+            host: process.env.TIDB_HOST || '127.0.0.1',
+            port: process.env.TIDB_PORT || 4000,
+            user: process.env.TIDB_USER || 'root',
+            password: process.env.TIDB_PASSWORD || '',
+            database: process.env.TIDB_DATABASE || 'test',
+            ssl: process.env.TIDB_ENABLE_SSL === 'true' ? {
                 minVersion: 'TLSv1.2',
-                ca: process.env.DATABASE_SSL_CA ? fs.readFileSync(process.env.DATABASE_SSL_CA) : undefined
+                ca: process.env.TIDB_CA_PATH ? fs.readFileSync(process.env.TIDB_CA_PATH) : undefined
             } : null,
         }
         return await createConnection(options);
