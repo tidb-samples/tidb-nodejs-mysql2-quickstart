@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS profiles;
+
 -- Create `players` table.
 DROP TABLE IF EXISTS players;
 CREATE TABLE players (

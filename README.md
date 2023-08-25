@@ -175,30 +175,46 @@ If the connection is successful, the console will output the version of the TiDB
 🚮 Deleted 1 player data.
 ```
 
-## Sample code
+## Sample code snippets
 
 ### Connect with connection options
 
 The following code establish a connection to TiDB with options defined in environment variables:
 
 ```javascript
-const options = {
-    host: process.env.TIDB_HOST || '127.0.0.1',
-    port: process.env.TIDB_PORT || 4000,
-    user: process.env.TIDB_USER || 'root',
-    password: process.env.TIDB_PASSWORD || '',
-    database: process.env.TIDB_DATABASE || 'test',
-    ssl: process.env.TIDB_ENABLE_SSL === 'true' ? {
-        minVersion: 'TLSv1.2',
-        ca: process.env.TIDB_CA_PATH ? fs.readFileSync(process.env.TIDB_CA_PATH) : undefined
-    } : null,
+// Step 1. Import the 'mysql' and 'dotenv' packages.
+import { createConnection } from "mysql2/promise";
+import dotenv from "dotenv";
+import * as fs from "fs";
+
+// Step 2. Load environment variables from .env file to process.env.
+dotenv.config();
+
+// Step 3. Create a connection with the TiDB cluster.
+async function main() {
+   const options = {
+      host: process.env.TIDB_HOST || '127.0.0.1',
+      port: process.env.TIDB_PORT || 4000,
+      user: process.env.TIDB_USER || 'root',
+      password: process.env.TIDB_PASSWORD || '',
+      database: process.env.TIDB_DATABASE || 'test',
+      ssl: process.env.TIDB_ENABLE_SSL === 'true' ? {
+         minVersion: 'TLSv1.2',
+         ca: process.env.TIDB_CA_PATH ? fs.readFileSync(process.env.TIDB_CA_PATH) : undefined
+      } : null,
+   }
+   const conn = await createConnection(options);
 }
-const conn = await createConnection(options);
+
+// Step 4. Perform some SQL operations...
+
+// Step 5. Close the connection.
+main().then(async () => {
+   await conn.end();
+});
 ```
 
-To enable TLS connection, please set up the environment variable `TIDB_ENABLE_SSL` to `true`. (Required for TiDB Serverless public endpoint)
-
-> For TiDB Serverless, you **don't** have to specify an SSL CA certificate, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) by default, which is trusted by TiDB Serverless.
+> For TiDB Serverless, TLS connection **MUST** be enabled via `TIDB_ENABLE_SSL` when using public endpoint, but you **don't** have to specify an SSL CA certificate via `TIDB_CA_PATH`, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) by default, which is trusted by TiDB Serverless.
 
 ### Connect with connection URL
 
@@ -267,7 +283,7 @@ For more information, refer to [Delete data](https://docs.pingcap.com/tidbcloud/
 
 - Using [connection pools](https://github.com/sidorares/node-mysql2#using-connection-pools) to manage database connections, which can reduce the performance overhead caused by frequently establishing/destroying connections.
 - Using [prepared statements](https://github.com/sidorares/node-mysql2#using-prepared-statements) to avoid SQL injection.
-- Using ORM frameworks to improve development efficiency in scenarios without a lot of complex SQL, such as [Sequelize](https://sequelize.org/) and [TypeORM](https://typeorm.io/).
+- Using ORM frameworks to improve development efficiency in scenarios without a number of complex SQL statements, such as: [Sequelize](https://sequelize.org/), [TypeORM](https://typeorm.io/), and [Prisma](https://prisma.io/docs).
 - Enable the `supportBigNumbers: true` option when dealing with big numbers (`BIGINT` and `DECIMAL` columns) in the database.
 - Enable the `enableKeepAlive: true` option to avoid socket error `read ECONNRESET` due to network problems. (Related issue: [sidorares/node-mysql2#683](https://github.com/sidorares/node-mysql2/issues/683))
 
