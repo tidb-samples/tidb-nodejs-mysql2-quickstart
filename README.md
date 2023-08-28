@@ -9,7 +9,7 @@ The following guide will show you how to connect to TiDB with Node.js driver [no
 
 > **Note**
 >
-> If you connect to a TiDB Serverless with public endpoint, you **MUST** [enable TLS connection on the mysql2 driver](#connect-with-connection-options).
+> If you want to connect to a TiDB Serverless with public endpoint, you **MUST** [enable TLS connection on the mysql2 driver](#connect-with-connection-options).
 
 ## Prerequisites
 
