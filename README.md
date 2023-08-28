@@ -7,7 +7,7 @@ TiDB is a MySQL-compatible database, and [node-mysql2](https://github.com/sidora
 
 The following guide will show you how to connect to TiDB with Node.js driver [node-mysql2](https://github.com/sidorares/node-mysql2) and perform basic SQL operations like create, read, update, and delete.
 
-> **Notice:**
+> **Note**
 >
 > The only difference is that if you connect to a TiDB Serverless cluster with public endpoint, you **MUST** [enable TLS connection on the mysql2 driver](#connect-with-connection-options).
 
@@ -89,7 +89,9 @@ npm install mysql2 dotenv --save
     TIDB_DATABASE=test
     TIDB_ENABLE_SSL=true
     ```
-   
+
+    > **Important**
+    >
     > Modify `TIDB_ENABLE_SSL` to `true` to enable a TLS connection. (Required for public endpoint)
 
 </details>
@@ -120,7 +122,9 @@ You can obtain the database connection parameters on [TiDB Cloud's Web Console](
     TIDB_ENABLE_SSL=true
     TIDB_CA_PATH=/path/to/ca.pem
     ```
-   
+
+    > **Important**
+    >
     > Modify `TIDB_ENABLE_SSL` to `true` to enable a TLS connection and using `TIDB_CA_PATH` to specify the file path of CA certificate downloaded from the connection dialog.
 
 </details>
@@ -214,6 +218,8 @@ main().then(async () => {
 });
 ```
 
+> **Important**
+>
 > For TiDB Serverless, TLS connection **MUST** be enabled via `TIDB_ENABLE_SSL` when using public endpoint, but you **don't** have to specify an SSL CA certificate via `TIDB_CA_PATH`, because Node.js uses the built-in [Mozilla CA certificate](https://wiki.mozilla.org/CA/Included_Certificates) by default, which is trusted by TiDB Serverless.
 
 ### Connect with connection URL
@@ -230,6 +236,8 @@ The format of the `DATABASE_URL` is as follows, replace the placeholders `{}` wi
 DATABASE_URL=mysql://{username}:{password}@{host}:{port}/{database_name}
 ```
 
+> **Important**
+>
 > To enable TLS connection, add argument `?ssl={"minVersion":"TLSv1.2"}` to the end of the URL. (Required for TiDB Serverless public endpoint)
 
 ### Insert data
